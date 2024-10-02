@@ -1,6 +1,6 @@
-// Set up the D3.js graph
-// Select the graph container
 const container = d3.select("#graph-container");
+
+const totalUser = document.querySelector(".totalUser span");
 
 // Append an SVG element to the container
 const svg = container
@@ -14,9 +14,9 @@ svg
   .attr("width", "100%")
   .attr("height", "100%")
   .attr("fill", "none")
-  .attr("pointer-events", "all"); // Ensure that events are captured on this element
+  .attr("pointer-events", "all");
 
-// Enable zoom behavior
+//  zoom behavior
 const zoom = d3.zoom().scaleExtent([0.1, Infinity]).on("zoom", zoomed);
 
 svg.call(zoom);
@@ -32,6 +32,8 @@ const contentGroup = svg.append("g");
 d3.json("social_network_data.json").then(function (data) {
   const nodes = data.nodes;
   const links = data.links;
+
+  totalUser.textContent = nodes.length;
 
   // Calculate node degrees
   const nodeDegrees = new Map();
@@ -79,19 +81,19 @@ d3.json("social_network_data.json").then(function (data) {
         .on("drag", dragged)
         .on("end", dragended)
     )
-    .on("mouseover", handleMouseOver) // Add mouseover event handler
-    .on("mouseout", handleMouseOut); // Add mouseout event handler
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", handleMouseOut);
 
   // Append circles to the node group with size based on degree
   node
     .append("circle")
-    .attr("r", (d) => 30 + (nodeDegrees.get(d.id) || 0))
-    .attr("fill", (d) => colorScale(d.id)); // Use the color scale for different colors
+    .attr("r", (d) => 50 + (nodeDegrees.get(d.id) || 0))
+    .attr("fill", (d) => colorScale(d.id));
 
   // Append text to the node group
   node
     .append("text")
-    .attr("text-anchor", "middle") // Center the text horizontally
+    .attr("text-anchor", "middle")
     .attr("dy", 4)
     .text((d) => d.name)
     .on("mouseover", handleMouseOver)
@@ -181,9 +183,9 @@ d3.json("social_network_data.json").then(function (data) {
       .duration(500) // Smooth transition duration
       .attr("r", (node) =>
         connectedNodeIds.has(node.id) || node.id === d.id
-          ? 45 + (nodeDegrees.get(node.id) || 0)
+          ? 70 + (nodeDegrees.get(node.id) || 0)
           : 20
-      ); // Adjust size for nodes
+      );
 
     // Smoothly decrease size for non-connected nodes
     node
@@ -191,7 +193,7 @@ d3.json("social_network_data.json").then(function (data) {
       .filter((node) => !connectedNodeIds.has(node.id) && node.id !== d.id)
       .transition()
       .duration(500) // Smooth transition duration
-      .attr("r", 20) // Set smaller size for non-connected nodes
+      .attr("r", 20)
       .style("opacity", (node) =>
         connectedNodeIds.has(node.id) || node.id === d.id ? 1 : 0.2
       );
@@ -246,14 +248,14 @@ d3.json("social_network_data.json").then(function (data) {
       .selectAll("circle")
       .transition()
       .attr("dy", 4)
-      .duration(100) // Smooth transition duration
-      .attr("r", (d) => 30 + (nodeDegrees.get(d.id) || 0))
+      .duration(100)
+      .attr("r", (d) => 50 + (nodeDegrees.get(d.id) || 0))
       .style("opacity", 1); // Reset size for nodes
 
     // Reset edge opacity
     link
       .transition()
-      .duration(10) // Smooth transition duration
+      .duration(10)
       .style("opacity", 1)
       .style("stroke", "rgba(183, 180, 180, 0.457)")
       .style("stroke-opacity", 1)
